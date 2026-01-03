@@ -32,8 +32,8 @@ RegisterNetEvent('rpa-shops:server:buy', function(shopId, itemName)
     if player.Functions.RemoveMoney('cash', itemData.price) then
         player.Functions.AddItem(itemData.name, 1)
         TriggerClientEvent('inventory:client:ItemBox', src, exports['rpa-lib']:GetFramework().Shared.Items[itemData.name], "add") -- QB specific?
-        exports['rpa-lib']:Notify(src, "Bought " .. itemData.label, "success")
+        exports['rpa-lib']:Notify(src, _U('shop_bought', itemData.name, itemData.price), "success")
     else
-        exports['rpa-lib']:Notify(src, "Not enough cash!", "error")
+        exports['rpa-lib']:Notify(src, _U('shop_poor'), "error")
     end
 end)
