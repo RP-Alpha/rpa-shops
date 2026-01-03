@@ -1,0 +1,33 @@
+name: Release Resource
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: action/checkout@v3
+
+      - name: Get Version
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Bundle Resource
+        run: |
+          mkdir release
+          # Copy all files excluding .git and .github
+          rsync -av --progress . release/ --exclude .git --exclude .github
+          cd release
+          zip -r ../${{ github.event.repository.name }}-${{ env.VERSION }}.zip .
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ github.event.repository.name }}-${{ env.VERSION }}.zip
+          name: Release ${{ env.VERSION }}
+          draft: false
+          prerelease: false
