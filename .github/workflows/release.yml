@@ -5,12 +5,15 @@ on:
     tags:
       - 'v*.*.*'
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get Version
         id: get_version
@@ -19,13 +22,12 @@ jobs:
       - name: Bundle Resource
         run: |
           mkdir release
-          # Copy all files excluding .git and .github
           rsync -av --progress . release/ --exclude .git --exclude .github
           cd release
           zip -r ../${{ github.event.repository.name }}-${{ env.VERSION }}.zip .
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: ${{ github.event.repository.name }}-${{ env.VERSION }}.zip
           name: Release ${{ env.VERSION }}
