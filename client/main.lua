@@ -1,8 +1,8 @@
 local currentShop = nil
 
-RegisterNetEvent('rpa-shops:client:open', function(shopId) {
+RegisterNetEvent('rpa-shops:client:open', function(shopId)
     local shop = Config.Shops[shopId]
-    if (!shop) return
+    if not shop then return end
     currentShop = shopId
 
     SetNuiFocus(true, true)
@@ -11,19 +11,19 @@ RegisterNetEvent('rpa-shops:client:open', function(shopId) {
         label = shop.label,
         items = shop.items
     })
-})
+end)
 
-RegisterNUICallback('close', function(data, cb) {
+RegisterNUICallback('close', function(data, cb)
     SetNuiFocus(false, false)
     currentShop = nil
     cb('ok')
-})
+end)
 
-RegisterNUICallback('buy', function(data, cb) {
-    if (!currentShop) return
+RegisterNUICallback('buy', function(data, cb)
+    if not currentShop then return end
     TriggerServerEvent('rpa-shops:server:buy', currentShop, data.item)
     cb('ok')
-})
+end)
 
 -- Init
 CreateThread(function()
